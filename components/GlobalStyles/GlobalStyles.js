@@ -1,8 +1,8 @@
 import { createGlobalStyle } from 'styled-components'
 
-import bp from '../styles/bp'
-import fontSizes from '../styles/fontSizes'
-import fontStyles from '../styles/fontStyles'
+import bp from '../../styles/bp'
+import fontSizes from '../../styles/fontSizes'
+import fontStyles from '../../styles/fontStyles'
 
 const GlobalStyles = createGlobalStyle`
   *, *:before, *:after {

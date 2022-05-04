@@ -11,7 +11,10 @@ const EntryList = styled.ul`
 
 const Entry = styled.li`
   padding: 0;
-  margin: 0;
+  margin: 1rem 2rem 0 0;
+  &:last-child {
+    margin-right: 0rem;
+  }
 `
 
 const Navigation = ({ entries = [] }) => {

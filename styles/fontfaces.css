@@ -1,0 +1,17 @@
+@font-face {
+  font-family: "ABC Repro";
+  src: local("ABC Repro"),
+      url("/fonts/ABCRepro-Regular.woff2") format("woff2"),
+      url("/fonts/ABCRepro-Regular.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "ABC Repro";
+  src: local("ABC Repro"),
+      url("/fonts/ABCRepro-RegularItalic.woff2") format("woff2"),
+      url("/fonts/ABCRepro-RegularItalic.woff") format("woff");
+  font-weight: normal;
+  font-style: italic;
+}

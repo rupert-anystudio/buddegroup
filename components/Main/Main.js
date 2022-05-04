@@ -6,7 +6,7 @@ const Main = styled.main`
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
 `
 
 export default Main

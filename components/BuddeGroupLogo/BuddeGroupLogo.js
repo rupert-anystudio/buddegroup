@@ -2,10 +2,15 @@ import styled from 'styled-components'
 import BuddeLogofamily from '../../svgs/BuddeLogofamily'
 
 const Wrap = styled.div`
-  width: clamp(80%, 80%, 140rem);
-  height: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   position: relative;
-  margin: 0 auto;
+  > svg {
+    width: clamp(12rem, 80%, 140rem);
+    margin: 0 auto;
+  }
 `
 
 const BuddeGroupLogo = () => {

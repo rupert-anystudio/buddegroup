@@ -5,6 +5,11 @@ import fontSizes from '../../styles/fontSizes'
 import fontStyles from '../../styles/fontStyles'
 
 const GlobalStyles = createGlobalStyle`
+  :root {
+    --bg-color: #ffffff;
+    --text-color: #000000;
+    --border-color: #BBBBBB;
+  }
   *, *:before, *:after {
     box-sizing: border-box;
   }
@@ -15,8 +20,8 @@ const GlobalStyles = createGlobalStyle`
     `}
   }
   body, html, #__next {
-    background: white;
-    color: black;
+    background: var(--bg-color);
+    color: var(--text-color);
     width: 100%;
     max-width: 100%;
     padding: 0 !important;

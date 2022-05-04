@@ -1,5 +1,6 @@
 import Head from 'next/head'
 import 'normalize.css'
+import '../styles/fontfaces.css'
 import GlobalStyles from '../components/GlobalStyles'
 import Header from '../components/Header'
 import Main from '../components/Main'
@@ -19,12 +20,12 @@ function MyApp({ Component, pageProps }) {
           as='font'
           crossOrigin='anonymous'
         />
-        {/* <link
+        <link
           rel='preload'
           href='/fonts/ABCRepro-RegularItalic.woff2'
           as='font'
           crossOrigin='anonymous'
-        /> */}
+        />
         <title>{title}</title>
         <meta name='description' content={desc} />
         <meta name='application-name' content={title} />

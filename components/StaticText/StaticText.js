@@ -6,12 +6,12 @@ import PortableText from '../PortableText'
 const Wrap = styled.div`
   padding: 2rem;
   position: relative;
-  width: clamp(12rem, 80%, 90rem);
+  width: clamp(10rem, 100%, 90rem);
   display: block;
 `
 
 const Title = styled.h1`
-  margin: 0;
+  margin: 2rem 0 4rem 0;
   ${fontSizes.plus2}
   ${bp.min.phonewide`
     ${fontSizes.plus4}

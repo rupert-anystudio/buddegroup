@@ -9,12 +9,17 @@ const GlobalStyles = createGlobalStyle`
     --bg-color: #ffffff;
     --text-color: #000000;
     --border-color: #BBBBBB;
+    --button-color: #FFE7AA;
   }
   *, *:before, *:after {
     box-sizing: border-box;
   }
   html {
     font-size: 52.5%;
+    overflow: -moz-scrollbars-vertical;
+    overflow: hidden;
+    overflow-y: scroll;
+    scroll-behavior: smooth;
     ${bp.min.phone`
        font-size: 62.5%;
     `}
@@ -31,10 +36,6 @@ const GlobalStyles = createGlobalStyle`
     ${fontStyles.base}
     ${fontSizes.root}
     text-rendering: optimizeLegibility;
-    overflow: -moz-scrollbars-vertical;
-    overflow: hidden;
-    overflow-y: scroll;
-    scroll-behavior: smooth;
   }
   #__next {
     flex: 1;

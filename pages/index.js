@@ -5,22 +5,22 @@ const groups = [
   {
     id: 'buddemusic',
     href: 'https://buddemusic.com',
-    description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.',
+    description: 'Independent publishing since 1947.',
   },
   {
     id: 'bta',
     href: 'https://bta.com/',
-    description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.',
+    description: 'We represent talent. Live, brands and talent agency based in Berlin.',
   },
   {
     id: 'phraseddifferently',
     href: 'http://www.phraseddifferently.com/',
-    description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.',
+    description: 'London-based independent music publishing, production and artist development company.',
   },
   {
     id: 'buddemanagement',
     href: 'https://buddemusicmgmt.com/',
-    description: 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.',
+    description: 'International artist management.',
   },
 ]
 

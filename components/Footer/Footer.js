@@ -8,6 +8,10 @@ const Wrap = styled.footer`
   width: 100%;
   overflow: hidden;
   padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: stretch;
   border-top: 1px solid var(--border-color);
 `
 

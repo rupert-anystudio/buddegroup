@@ -22,7 +22,7 @@ const Item = styled.div`
   background: white;
   flex: 0 1 100%;
   @media (max-width: ${(1024 - 1) / 16}em) {
-    flex: 1 0 auto;
+    flex: 1 0 0;
     ${p => (!p.isDefault && !p.isOpen) && css`
       flex: 0 0 0;
     `}
@@ -34,14 +34,24 @@ const Item = styled.div`
     position: static;
     opacity: 0.2;
     cursor: pointer;
+    background: black;
     img, video {
       width: 100%;
       height: 100%;
       top: 50%;
       left: 50%;
-      transform: translate3d(-50%, -50%, 0);
+      transform: translate3d(-50%, -50%, 0) scale(1.4);
       position: absolute;
       object-fit: cover;
+    }
+    .blur {
+      width: 100%;
+      height: 100%;
+      top: 0%;
+      left: 0%;
+      position: absolute;
+      backdrop-filter: blur(20px);
+      display: none;
     }
   }
   .collapsing {
@@ -112,6 +122,7 @@ const CollapsingSections = ({
               // onClick={() => onSectionClick(section)}
             >
               {renderMedia(section)}
+              <div className='blur' />
             </div>
             <div className='collapsing'>
               <div className='title'>

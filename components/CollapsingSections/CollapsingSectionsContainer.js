@@ -71,8 +71,14 @@ const CollapsingSectionsContainer = ({ sections = [], ...rest }) => {
         autoAlpha: 0,
       })
       .to(q('.item.collapsed > .media'), {
-        autoAlpha: 0.2,
+        autoAlpha: 1,
       }, '<')
+      // .to(q('.item.open > .media > .blur'), {
+      //   backdropFilter: 'blur(0px)',
+      // }, '<')
+      // .to(q('.item.collapsed > .media > .blur'), {
+      //   backdropFilter: 'blur(80px)',
+      // }, '<')
       .to(q('.item.open > .media'), {
         autoAlpha: 1,
       }, '<')

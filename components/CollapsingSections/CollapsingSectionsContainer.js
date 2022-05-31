@@ -3,11 +3,11 @@ import { gsap } from 'gsap'
 import Flip from 'gsap/dist/Flip'
 
 import CollapsingSections from './CollapsingSections'
+import { useIsomorphicLayoutEffect } from '../../hooks/useIsomorphicLayoutEffect'
 
 gsap.registerPlugin(Flip)
 
 const CollapsingSectionsContainer = ({ sections = [] }) => {
-  const prevLayout = useRef(null)
   const wrapRef = useRef()
   const q = gsap.utils.selector(wrapRef)
 
@@ -24,154 +24,73 @@ const CollapsingSectionsContainer = ({ sections = [] }) => {
     }))
   }
 
-  useEffect(() => {
-    const layoutPrev = prevLayout.current
-    if (!layout.state) {
-      return
-    }
+  useIsomorphicLayoutEffect(() => {
+    if (!layout.state) return
 
-    const timeline = gsap.timeline()
+    const timeline = gsap.timeline({
+      defaults: {
+        duration: .3,
+        ease: 'power1.inOut',
+      }
+    })
 
-    // timeline.add(
-    //   gsap
-    //     .timeline({
-    //       defaults: {
-    //         ease: 'power1.inOut',
-    //       }
-    //     })
-    //     .to(
-    //       q('.item.collapsed'),
-    //       {
-    //         duration: 0.3,
-    //         backgroundColor: 'rgba(187,187,187,1)'
-    //       }
-    //     )
-    //     .to(q('.item.collapsed > div > p'), {
-    //       duration: 0.2,
-    //       autoAlpha: 0,
-    //     }, '<')
-    //     .to(q('.item.collapsed > div'), {
-    //       duration: 0.2,
-    //       // backgroundColor: 'rgba(255,255,255,0)'
-    //     }, '<')
-    // )
+    const beforeLayoutTl = gsap
+      .timeline({
+        defaults: {
+          duration: .3,
+          ease: 'power1.inOut',
+        }
+      })
+      .to(q('.item.collapsed > .collapsing > .content'), {
+        autoAlpha: 0,
+      })
+      .to(q('.item.collapsed > .media'), {
+        autoAlpha: 0.2,
+      }, '<')
+      .to(q('.item.open > .media'), {
+        autoAlpha: 1,
+      }, '<')
+      .to(q('.item.collapsed > .collapsing'), {
+        y: '100%'
+      }, '<')
+      .to(q('.item.collapsed > .collapsing > .title'), {
+        y: '-100%'
+      }, '<')
+      .to(q('.item.open > .collapsing'), {
+        y: '0%'
+      }, '<')
+      .to(q('.item.open > .collapsing > .title'), {
+        y: '0%'
+      }, '<')
+      .set(q('.item.collapsed > .collapsing > .content'), {
+        y: 10,
+      })
 
-    // timeline.add(
-    //   gsap
-    //     .timeline({
-    //       defaults: {
-    //         ease: 'power1.inOut',
-    //       }
-    //     })
-    //     .to(q('.item.collapsed > div'), {
-    //       duration: 0.3,
-    //       y: '100%'
-    //     })
-    //     .to(q('.item.collapsed > div > h1'), {
-    //       duration: 0.3,
-    //       y: '-100%'
-    //     }, '<')
-    //     .to(q('.item.open'), {
-    //       backgroundColor: 'rgba(157,157,157,1)'
-    //     }, '<'),
-    //   '-=0.2'
-    // )
-
-    timeline.add(Flip.from(layout.state, {
+    const layoutTl = Flip.from(layout.state, {
       duration: .3,
       absolute: true, 
       ease: 'power1.inOut',
       targets: q('.item'),
       scale: false,
       simple: true,
-    }))
-    timeline.addLabel("layoutStart", '<')
-    timeline.addLabel("layoutEnd", '+=0')
-    timeline.addLabel("start", 0)
+    })
 
-
-    // timeline.to(q('.item.collapsed'), {
-    //   duration: .3,
-    //   backgroundColor: 'rgba(255,255,255,1)'
-    // }, 'layoutStart')
-
-    // timeline.to(q('.item.open'), {
-    //   duration: .3,
-    //   backgroundColor: 'rgba(255,0,0,1)'
-    // }, 'layoutEnd')
-
-
-
-    timeline.to(q('.item.collapsed > div'), {
-      duration: .3,
-      y: '100%',
-    }, 'layoutStart')
-
-    timeline.to(q('.item.collapsed > div'), {
-      duration: .3,
-      backgroundColor: 'rgba(255,255,255,0)'
-    }, 'layoutStart')
-
-    timeline.to(q('.item.open > div'), {
-      duration: .3,
-      y: '0%',
-    }, 'layoutStart')
-
-
-    timeline.to(q('.item.collapsed > div > h1'), {
-      duration: .3,
-      y: '-100%',
-    }, 'layoutStart')
-
-
-    timeline.to(q('.item.collapsed > div > p'), {
-      duration: .15,
-      autoAlpha: 0,
-    }, 'layoutStart')
-
-    timeline.to(q('.item.open > div > h1'), {
-      duration: .3,
-      y: '0%',
-    }, 'layoutStart')
-
-
-    timeline.to(q('.item.open > div > p'), {
-      duration: .15,
+    const aterLayoutTl = gsap.timeline({
+      defaults: {
+        duration: .3,
+        ease: 'power1.inOut',
+      }
+    })
+    .to(q('.item.open > .collapsing > .content'), {
       autoAlpha: 1,
-    }, 'layoutEnd')
+      y: 0,
+    })
 
-    timeline.to(q('.item.open > div'), {
-      duration: .3,
-      backgroundColor: 'rgba(255,255,255,1)'
-    }, 'layoutEnd')
-
-    // timeline.add(
-    //   gsap
-    //     .timeline({
-    //       defaults: {
-    //         duration: 0.3,
-    //         ease: 'power1.inOut',
-    //       }
-    //     })
-    //     .to(q('.item.open > div'), {
-    //       duration: 0.1,
-    //       backgroundColor: 'rgba(255,255,255,1)'
-    //     })
-    //     .to(q('.item.open > div'), {
-    //       y: '0%'
-    //     }, '<')
-    //     .to(q('.item.open > div > h1'), {
-    //       y: '0%'
-    //     }, '<')
-    //     .to(q('.item.open > div > p'), {
-    //       autoAlpha: 1
-    //     }, '+=0'),
-    //   '-=0.5'
-    // )
+    timeline.add(beforeLayoutTl)
+    timeline.add(layoutTl, '<')
+    timeline.add(aterLayoutTl, '-=0.1')
 
     timeline.play()
-
-    prevLayout.current = layout
 
   }, [layout, sections, q])
 

@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 import { css } from 'styled-components'
-import bp from '../../styles/bp'
 
 const Wrap = styled.div`
   flex: 1;
@@ -19,11 +18,11 @@ const Item = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  min-height: 6rem;
-  background: var(--border-color);
+  min-height: 8rem;
+  background: white;
   flex: 0 1 100%;
   &:not(:last-child) {
-    border-bottom: 1px solid white;
+    /* border-bottom: 1px solid white; */
   }
   @media (max-width: ${(1024 - 1) / 16}em) {
     flex: 1 0 auto;
@@ -43,19 +42,46 @@ const CollapsingContent = styled.div`
   position: relative;
   flex: 0 0 auto;
   transform: translateY(100%);
-  p, h1 {
+  background: white;
+  .title {
     position: relative;
     margin: 0;
-  }
-  p {
-    padding: 1rem;
-  }
-  h1 {
     transform: translateY(-100%);
-    line-height: 6rem;
-    font-size: 3rem;
     padding: 0;
-    padding: 0 1rem;
+    line-height: 0;
+    padding: 2rem;
+    img {
+      width: auto;
+      height: 4rem;
+      margin: 0;
+    }
+  }
+`
+
+const Title = styled.h1`
+  position: relative;
+  margin: 0;
+  line-height: 4rem;
+  font-size: 3rem;
+  padding: 0;
+`
+
+const Description = styled.p`
+  position: relative;
+  margin: 0;
+  padding: 0 2rem 2rem 2rem;
+`
+
+const ItemBackground = styled.div`
+  position: static;
+  img, video {
+    width: 100%;
+    height: 100%;
+    top: 50%;
+    left: 50%;
+    transform: translate3d(-50%, -50%, 0);
+    position: absolute;
+    object-fit: cover;
   }
 `
 
@@ -77,12 +103,24 @@ const CollapsingSections = ({
               isOpen={isOpen}
               isDefault={!openSection}
             >
-              <CollapsingContent
-                className={'collapsingContent'}
-                isOpen={isOpen}
-              >
-                <h1 className={'collapsingContentTitle'}>{section.id}</h1>
-                <p>{section.description}</p>
+              <ItemBackground className='media'>
+                <video
+                  muted
+                  autoPlay={true}
+                  loop
+                  src={section.video}
+                />
+              </ItemBackground>
+              <CollapsingContent className='collapsing' isOpen={isOpen}>
+                <div className='title'>
+                  {section.logo
+                    ? <img src={section.logo} />
+                    : <Title>{section.id}</Title>
+                  }
+                </div>
+                <div className='content'>
+                  <Description>{section.description}</Description>
+                </div>
               </CollapsingContent>
             </Item>
           </React.Fragment>

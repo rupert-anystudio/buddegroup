@@ -7,7 +7,7 @@ import { useIsomorphicLayoutEffect } from '../../hooks/useIsomorphicLayoutEffect
 
 gsap.registerPlugin(Flip)
 
-const CollapsingSectionsContainer = ({ sections = [] }) => {
+const CollapsingSectionsContainer = ({ sections = [], ...rest }) => {
   const wrapRef = useRef()
   const q = gsap.utils.selector(wrapRef)
 
@@ -100,6 +100,7 @@ const CollapsingSectionsContainer = ({ sections = [] }) => {
       onSectionClick={handleSectionClick}
       openSection={layout.openSection}
       wrapRef={wrapRef}
+      {...rest}
     />
   )
 }

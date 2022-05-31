@@ -21,19 +21,13 @@ const Item = styled.div`
   min-height: 8rem;
   background: white;
   flex: 0 1 100%;
-  &:not(:last-child) {
-    /* border-bottom: 1px solid white; */
-  }
   @media (max-width: ${(1024 - 1) / 16}em) {
     flex: 1 0 auto;
     ${p => (!p.isDefault && !p.isOpen) && css`
       flex: 0 0 0;
-      /* background: lightskyblue; */
     `}
     ${p => (!p.isDefault && p.isOpen) && css`
       flex: 1 0 auto;
-      min-height: 36rem;
-      /* background: cornflowerblue; */
     `}
   }
 `
@@ -50,29 +44,30 @@ const CollapsingContent = styled.div`
     padding: 0;
     line-height: 0;
     padding: 2rem;
+    h1 {
+      position: relative;
+      margin: 0;
+      line-height: 4rem;
+      font-size: 3rem;
+      padding: 0;
+    }
     img {
       width: auto;
       height: 4rem;
       margin: 0;
     }
   }
+  .content {
+    position: relative;
+    margin: 0;
+    padding: 0 2rem 2rem 2rem;
+    p {
+      margin: 0;
+    }
+  }
 `
 
-const Title = styled.h1`
-  position: relative;
-  margin: 0;
-  line-height: 4rem;
-  font-size: 3rem;
-  padding: 0;
-`
-
-const Description = styled.p`
-  position: relative;
-  margin: 0;
-  padding: 0 2rem 2rem 2rem;
-`
-
-const ItemBackground = styled.div`
+const Media = styled.div`
   position: static;
   img, video {
     width: 100%;
@@ -90,6 +85,9 @@ const CollapsingSections = ({
   onSectionClick,
   openSection,
   wrapRef,
+  renderMedia = () => null,
+  renderContent = () => null,
+  renderTitle = () => null,
 }) => {
   return (
     <Wrap ref={wrapRef}>
@@ -103,23 +101,15 @@ const CollapsingSections = ({
               isOpen={isOpen}
               isDefault={!openSection}
             >
-              <ItemBackground className='media'>
-                <video
-                  muted
-                  autoPlay={true}
-                  loop
-                  src={section.video}
-                />
-              </ItemBackground>
+              <Media className='media'>
+                {renderMedia(section)}
+              </Media>
               <CollapsingContent className='collapsing' isOpen={isOpen}>
                 <div className='title'>
-                  {section.logo
-                    ? <img src={section.logo} />
-                    : <Title>{section.id}</Title>
-                  }
+                  {renderTitle(section)}
                 </div>
                 <div className='content'>
-                  <Description>{section.description}</Description>
+                  {renderContent(section)}
                 </div>
               </CollapsingContent>
             </Item>

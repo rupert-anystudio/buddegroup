@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
+import { debounce, throttle } from 'lodash'
 import { gsap } from 'gsap'
 import Flip from 'gsap/dist/Flip'
 
@@ -15,13 +16,32 @@ const CollapsingSectionsContainer = ({ sections = [], ...rest }) => {
     openSection: null,
   })
 
-  const handleSectionClick = section => {
+  const onSectionSelectBase = sectionId => {
     // console.log('handleSectionClick', section)
     setLayout(prev => ({
       ...prev,
       state: Flip.getState(q('.item')),
-      openSection: prev.openSection !== section.id ? section.id : null,
+      openSection: sectionId,
     }))
+  }
+
+  const onSectionSelect = useRef(
+    debounce(onSectionSelectBase, 120)
+  ).current
+
+  const handleSectionClick = section => {
+    // console.log('handleSectionClick', section)
+    onSectionSelect(section.id)
+  }
+
+  const handleSectionMouseEnter = section => {
+    console.log('handleSectionMouseEnter')
+    onSectionSelect(section.id)
+  }
+
+  const handleMouseLeave = section => {
+    console.log('handleSectionMouseLeave', section)
+    onSectionSelect(null)
   }
 
   useIsomorphicLayoutEffect(() => {
@@ -31,6 +51,12 @@ const CollapsingSectionsContainer = ({ sections = [], ...rest }) => {
       defaults: {
         duration: .3,
         ease: 'power1.inOut',
+      },
+      onStart: () => {
+        // console.log('timeline onStart!')
+      },
+      onComplete: () => {
+        // console.log('timeline onComplete!')
       }
     })
 
@@ -63,7 +89,7 @@ const CollapsingSectionsContainer = ({ sections = [], ...rest }) => {
         y: '0%'
       }, '<')
       .set(q('.item.collapsed > .collapsing > .content'), {
-        y: 10,
+        y: 5,
       })
 
     const layoutTl = Flip.from(layout.state, {
@@ -92,12 +118,18 @@ const CollapsingSectionsContainer = ({ sections = [], ...rest }) => {
 
     timeline.play()
 
+    return () => {
+      timeline.kill()
+    }
+
   }, [layout, sections, q])
 
   return (
     <CollapsingSections
       sections={sections}
       onSectionClick={handleSectionClick}
+      onSectionMouseEnter={handleSectionMouseEnter}
+      onMouseLeave={handleMouseLeave}
       openSection={layout.openSection}
       wrapRef={wrapRef}
       {...rest}

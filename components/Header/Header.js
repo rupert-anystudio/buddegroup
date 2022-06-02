@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import bp from '../../styles/bp'
 
 const Wrap = styled.header`
   flex: 0 0 auto;
@@ -22,6 +23,9 @@ const Logo = styled.div`
   img {
     width: auto;
     height: 2.2rem;
+    ${bp.min.laptop`
+      height: 3.2rem;
+    `}
   }
 `
 

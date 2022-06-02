@@ -1,6 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
 import { css } from 'styled-components'
+import bp from '../../styles/bp'
+import fontSizes from '../../styles/fontSizes'
 
 const Wrap = styled.div`
   flex: 1;
@@ -32,7 +34,7 @@ const Item = styled.div`
   }
   .media {
     position: static;
-    opacity: 0.2;
+    opacity: 1;
     cursor: pointer;
     background: black;
     img, video {
@@ -78,6 +80,9 @@ const Item = styled.div`
         width: auto;
         height: 3.8rem;
         margin: 0;
+        ${bp.min.laptop`
+          height: 4.8rem;
+        `}
       }
     }
     .content {
@@ -87,6 +92,9 @@ const Item = styled.div`
       margin: 0 0 2rem 0;
       p {
         margin: 0;
+        ${bp.min.laptop`
+          font-size: 2rem;
+        `}
       }
     }
   }
@@ -95,6 +103,7 @@ const Item = styled.div`
 const CollapsingSections = ({
   sections = [],
   onSectionMouseEnter,
+  onSectionClick,
   onMouseLeave,
   openSection,
   wrapRef,
@@ -115,11 +124,11 @@ const CollapsingSections = ({
             className={`item ${isOpen ? 'open' : 'collapsed'}`}
             isOpen={isOpen}
             isDefault={!openSection}
-            onMouseEnter={() => onSectionMouseEnter(section)}
+            // onMouseEnter={() => onSectionMouseEnter(section)}
           >
             <div
               className='media'
-              // onClick={() => onSectionClick(section)}
+              onClick={() => onSectionClick(section)}
             >
               {renderMedia(section)}
               <div className='blur' />

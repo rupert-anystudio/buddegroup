@@ -31,7 +31,12 @@ const CollapsingSectionsContainer = ({ sections = [], ...rest }) => {
 
   const handleSectionClick = section => {
     // console.log('handleSectionClick', section)
-    onSectionSelect(section.id)
+    // onSectionSelect(section.id)
+    setLayout(prev => ({
+      ...prev,
+      state: Flip.getState(q('.item')),
+      openSection: section.id === prev.openSection ? null : section.id,
+    }))
   }
 
   const handleSectionMouseEnter = section => {

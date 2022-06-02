@@ -1,22 +1,5 @@
 import { css } from 'styled-components'
-
-const returnMinWidhts = bps => Object.keys(bps).reduce((acc, key) => {
-  const bp = bps[key]
-  if (!bp) return acc
-  return {
-    ...acc,
-    [key]: `(min-width: ${bp}px)`
-  }
-}, {})
-
-const returnMaxWidths = bps => Object.keys(bps).reduce((acc, key) => {
-  const bp = bps[key]
-  if (!bp) return acc
-  return {
-    ...acc,
-    [key]: `(max-width: ${bp - 1}px)`
-  }
-}, {})
+import { returnMaxWidths, returnMinWidhts } from '../lib/utils'
 
 export const breakpoints = {
   phone: 350,
@@ -27,6 +10,10 @@ export const breakpoints = {
   laptopwide: 1430,
   desktop: 1670,
   desktopwide: 2500,
+  // component/layout specific
+  twocols: 1014,
+  title1: 600,
+  title2: 900,
 }
 
 // use em in breakpoints to work properly cross-browser and support users

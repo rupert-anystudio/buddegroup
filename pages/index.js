@@ -20,12 +20,17 @@ export default function Home({ members }) {
           </>
         )}
         renderMedia={entry => (
-          <video
-            muted
-            autoPlay={true}
-            loop
-            src={entry.video.asset.url}
-          />
+          <>
+            {entry?.image?.asset?.url && (
+              <img src={entry.image.asset.url} />
+            )}
+            <video
+              muted
+              autoPlay={true}
+              loop
+              src={entry.video.asset.url}
+            />
+          </>
         )}
       />
     </>

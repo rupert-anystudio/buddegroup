@@ -40,12 +40,12 @@ const CollapsingSectionsContainer = ({ sections = [], ...rest }) => {
   }
 
   const handleSectionMouseEnter = section => {
-    console.log('handleSectionMouseEnter')
+    // console.log('handleSectionMouseEnter')
     onSectionSelect(section.id)
   }
 
   const handleMouseLeave = section => {
-    console.log('handleSectionMouseLeave', section)
+    // console.log('handleSectionMouseLeave', section)
     onSectionSelect(null)
   }
 

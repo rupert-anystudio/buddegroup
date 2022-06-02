@@ -36,7 +36,7 @@ const Header = () => {
         <span>
           BuddeGroup
         </span>
-        <img src='/temp/BuddeGroup.svg' />
+        <img src='/BuddeGroup.svg' />
       </Logo>
     </Wrap>
   )

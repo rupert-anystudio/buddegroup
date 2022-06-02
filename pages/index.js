@@ -4,7 +4,6 @@ import buddegroups from '../lib/buddegroups'
 import { getClient } from '../lib/sanity.server'
 
 export default function Home({ members }) {
-  console.log('members', members)
   return (
     <>
       <CollapsingSections

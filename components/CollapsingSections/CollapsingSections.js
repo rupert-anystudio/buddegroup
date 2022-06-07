@@ -1,8 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 import { css } from 'styled-components'
-import bp from '../../styles/bp'
-import fontSizes from '../../styles/fontSizes'
 
 const Wrap = styled.div`
   flex: 1;
@@ -27,6 +25,7 @@ const Item = styled.div`
     flex: 1 0 0;
     ${p => (!p.isDefault && !p.isOpen) && css`
       flex: 0 0 0;
+      /* min-height: 0; */
     `}
     ${p => (!p.isDefault && p.isOpen) && css`
       flex: 1 0 auto;
@@ -34,27 +33,8 @@ const Item = styled.div`
   }
   .media {
     position: static;
-    opacity: 1;
     cursor: pointer;
     background: black;
-    img, video {
-      width: 100%;
-      height: 100%;
-      top: 50%;
-      left: 50%;
-      transform: translate3d(-50%, -50%, 0) scale(1.4);
-      position: absolute;
-      object-fit: cover;
-    }
-    .blur {
-      width: 100%;
-      height: 100%;
-      top: 0%;
-      left: 0%;
-      position: absolute;
-      backdrop-filter: blur(20px);
-      display: none;
-    }
   }
   .collapsing {
     position: relative;
@@ -64,45 +44,20 @@ const Item = styled.div`
     .title {
       position: relative;
       margin: 0;
-      transform: translateY(-100%);
       padding: 0;
-      line-height: 0;
-      padding: 2rem 1.5rem;
+      transform: translateY(-100%);
       pointer-events: none;
-      h1 {
-        position: relative;
-        margin: 0;
-        line-height: 4rem;
-        font-size: 3rem;
-        padding: 0;
-      }
-      img {
-        width: auto;
-        height: 3.8rem;
-        margin: 0;
-        ${bp.min.laptop`
-          height: 4.8rem;
-        `}
-      }
     }
     .content {
       position: relative;
       margin: 0;
-      padding: 0 1.5rem;
-      margin: 0 0 2rem 0;
-      p {
-        margin: 0;
-        ${bp.min.laptop`
-          font-size: 2rem;
-        `}
-      }
+      padding: 0;
     }
   }
 `
 
 const CollapsingSections = ({
   sections = [],
-  onSectionMouseEnter,
   onSectionClick,
   onMouseLeave,
   openSection,
@@ -124,14 +79,12 @@ const CollapsingSections = ({
             className={`item ${isOpen ? 'open' : 'collapsed'}`}
             isOpen={isOpen}
             isDefault={!openSection}
-            // onMouseEnter={() => onSectionMouseEnter(section)}
           >
             <div
               className='media'
               onClick={() => onSectionClick(section)}
             >
               {renderMedia(section)}
-              <div className='blur' />
             </div>
             <div className='collapsing'>
               <div className='title'>

@@ -1,38 +1,9 @@
-import CollapsingSections from '../components/CollapsingSections'
-import Button from '../components/Button'
-import buddegroups from '../lib/buddegroups'
 import { getClient } from '../lib/sanity.server'
+import BuddeGroups from '../components/BuddeGroups'
 
 export default function Home({ members }) {
   return (
-    <>
-      <CollapsingSections
-        sections={members}
-        renderTitle={entry => {
-          if (entry.logo) return <img src={entry.logo.asset.url} />
-          return <h1>{entry.name}</h1>
-        }}
-        renderContent={entry => (
-          <>
-            <p>{entry.description}</p>
-            <Button href={entry.url} label={'Visit'} style={{ marginTop: 10 }} />
-          </>
-        )}
-        renderMedia={entry => (
-          <>
-            {entry?.image?.asset?.url && (
-              <img src={entry.image.asset.url} />
-            )}
-            <video
-              muted
-              autoPlay={true}
-              loop
-              src={entry.video.asset.url}
-            />
-          </>
-        )}
-      />
-    </>
+    <BuddeGroups members={members} />
   )
 }
 

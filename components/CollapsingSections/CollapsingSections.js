@@ -66,34 +66,43 @@ const CollapsingSections = ({
   renderMedia = () => null,
   renderContent = () => null,
   renderTitle = () => null,
+  hasWindow,
+  canHover,
+  hasColumns,
 }) => {
   return (
     <Wrap
       ref={wrapRef}
     >
-      {sections.map(section => {
-        const isOpen = section.id === openSection
+      {sections.map(entry => {
+        const isOpen = entry.id === openSection
+        const renderProps = {
+          entry,
+          hasWindow,
+          canHover,
+          hasColumns,
+        }
         return (
           <Item
-            key={section.id}
+            key={entry.id}
             className={`item ${isOpen ? 'open' : 'collapsed'}`}
             isOpen={isOpen}
             isDefault={!openSection}
-            onMouseEnter={() => onMouseEnter(section)}
-            onMouseLeave={() => onMouseLeave()}
-            onClick={() => onClick(section)}
+            onMouseEnter={() => onMouseEnter(entry)}
+            onMouseLeave={() => onMouseLeave(entry)}
+            onClick={() => onClick(entry)}
           >
             <div
               className='media'
             >
-              {renderMedia(section)}
+              {renderMedia(renderProps)}
             </div>
             <div className='collapsing'>
               <div className='title'>
-                {renderTitle(section)}
+                {renderTitle(renderProps)}
               </div>
               <div className='content'>
-                {renderContent(section)}
+                {renderContent(renderProps)}
               </div>
             </div>
           </Item>

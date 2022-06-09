@@ -5,6 +5,7 @@ import Flip from 'gsap/dist/Flip'
 
 import CollapsingSections from './CollapsingSections'
 import useMediaQuery from '../../hooks/useMediaQuery'
+import useHasWindow from '../../hooks/useHasWindow'
 
 gsap.registerPlugin(Flip)
 
@@ -14,41 +15,43 @@ const CollapsingSectionsContainer = ({ sections = [], ...rest }) => {
 
   const hasColumns = useMediaQuery('(min-width: 1024px)', false)
   const canHover = useMediaQuery('(hover: hover)', false)
+  const hasWindow = useHasWindow()
 
   const [layout, setLayout] = useState({
     openSection: null,
   })
 
-  const onSectionSelect_ = sectionId => {
+  const onSectionSelect = useCallback(sectionId => {
     const items = q('.item')
+    const newState = Flip.getState(items)
     setLayout(prev => ({
       ...prev,
-      state: Flip.getState(items),
+      state: newState,
       openSection: sectionId,
     }))
-  }
+  }, [q])
 
-  const onSectionSelect = useRef(
-    debounce(onSectionSelect_, 120)
+  const onSectionSelectDebounced = useRef(
+    debounce(onSectionSelect, 120)
   ).current
 
   const handleClick = useCallback(section => {
     if (!canHover || (canHover && !hasColumns)) {
-      onSectionSelect_(section.id)
+      onSectionSelectDebounced(section.id)
     }
-  }, [canHover, hasColumns])
+  }, [canHover, hasColumns, onSectionSelectDebounced])
 
   const handleMouseEnter = useCallback(section => {
     if (canHover && hasColumns) {
-      onSectionSelect_(section.id)
+      onSectionSelectDebounced(section.id)
     }
-  }, [canHover, hasColumns])
+  }, [canHover, hasColumns, onSectionSelectDebounced])
 
   const handleMouseLeave = useCallback(() => {
     if (canHover && hasColumns) {
-      onSectionSelect_(null)
+      onSectionSelectDebounced(null)
     }
-  }, [canHover, hasColumns])
+  }, [canHover, hasColumns, onSectionSelectDebounced])
 
   useEffect(() => {
     if (!layout.state) return
@@ -60,6 +63,7 @@ const CollapsingSectionsContainer = ({ sections = [], ...rest }) => {
       defaults: {
         duration: .3,
         ease: 'power1.inOut',
+        overwrite: true,
       },
       onStart: () => {
         // console.log('timeline onStart!')
@@ -69,20 +73,21 @@ const CollapsingSectionsContainer = ({ sections = [], ...rest }) => {
       }
     })
 
-    const layoutTl = Flip.from(layout.state, {
+    const timelineFlip = Flip.from(layout.state, {
       duration: .3,
-      absolute: true, 
+      absolute: true,
       ease: 'power1.inOut',
       targets: items,
       scale: false,
       simple: true,
     })
 
-    const beforeLayoutTl = gsap
+    const timelineBeforeFlip = gsap
       .timeline({
         defaults: {
           duration: .3,
           ease: 'power1.inOut',
+          overwrite: true,
         }
       })
       .to(q('.item.collapsed > .collapsing > .content'), {
@@ -91,12 +96,6 @@ const CollapsingSectionsContainer = ({ sections = [], ...rest }) => {
       .to(q('.item.collapsed > .media'), {
         autoAlpha: 1,
       }, '<')
-      // .to(q('.item.open > .media > .blur'), {
-      //   backdropFilter: 'blur(0px)',
-      // }, '<')
-      // .to(q('.item.collapsed > .media > .blur'), {
-      //   backdropFilter: 'blur(80px)',
-      // }, '<')
       .to(q('.item.open > .media'), {
         autoAlpha: 1,
       }, '<')
@@ -116,10 +115,11 @@ const CollapsingSectionsContainer = ({ sections = [], ...rest }) => {
         y: 5,
       })
 
-    const aterLayoutTl = gsap.timeline({
+    const timelineAfterFlip = gsap.timeline({
       defaults: {
         duration: .3,
         ease: 'power1.inOut',
+        overwrite: true,
       }
     })
     .to(q('.item.open > .collapsing > .content'), {
@@ -127,14 +127,18 @@ const CollapsingSectionsContainer = ({ sections = [], ...rest }) => {
       y: 0,
     })
 
-    timeline.add(beforeLayoutTl)
-    timeline.add(layoutTl, '<')
-    timeline.add(aterLayoutTl, '-=0.1')
+    timeline.add(timelineBeforeFlip)
+    timeline.add(timelineFlip, '<')
+    timeline.add(timelineAfterFlip, '-=0.1')
 
     timeline.play()
 
     return () => {
+      timeline.invalidate()
       timeline.kill()
+      timelineBeforeFlip.kill()
+      timelineFlip.kill()
+      timelineAfterFlip.kill()
     }
 
   }, [layout, sections, q])
@@ -147,6 +151,9 @@ const CollapsingSectionsContainer = ({ sections = [], ...rest }) => {
       onMouseLeave={handleMouseLeave}
       openSection={layout.openSection}
       wrapRef={wrapRef}
+      hasColumns={hasColumns}
+      canHover={canHover}
+      hasWindow={hasWindow}
       {...rest}
     />
   )

@@ -1,5 +1,5 @@
 import { css } from 'styled-components'
-import { returnMaxWidths, returnMinWidhts } from '../lib/utils'
+import { returnMaxWidths, returnMinWidths } from '../lib/utils'
 
 export const breakpoints = {
   phone: 350,
@@ -32,16 +32,18 @@ const getMax = (value) => (...args) => css`
 `
 
 export const min = Object.keys(breakpoints).reduce((acc, key) => {
-  return { ...acc, [key]: getMin(breakpoints[key])}
+  acc[key] = getMin(breakpoints[key])
+  return acc
 }, {})
 
 export const max = Object.keys(breakpoints).reduce((acc, key) => {
-  return { ...acc, [key]: getMax(breakpoints[key])}
+  acc[key] = getMax(breakpoints[key])
+  return acc
 }, {})
 
 const bp = { min, max }
 
-export const minWidths = returnMinWidhts(breakpoints)
+export const minWidths = returnMinWidths(breakpoints)
 export const maxWidths = returnMaxWidths(breakpoints)
 
 export default bp

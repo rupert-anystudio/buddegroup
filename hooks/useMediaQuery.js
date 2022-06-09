@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
+import useIsomorphicLayoutEffect from './useIsomorphicLayoutEffect'
 
 const useMediaQuery = (mediaQuery, initialMatch = false) => {
   const [matches, setMatches] = useState(initialMatch)
 
-  useEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     const mediaWatcher = window.matchMedia(mediaQuery)
 
     setMatches(mediaWatcher.matches)
@@ -11,19 +12,21 @@ const useMediaQuery = (mediaQuery, initialMatch = false) => {
     function onMediaChange(e) {
       setMatches(e.matches)
     }
-  
-    if (!mediaWatcher.addEventListener) { // for sarfari issue
+
+    if (mediaWatcher.addListener) { // for sarfari issue
       mediaWatcher.addListener(onMediaChange)
-      return () => {
-        mediaWatcher.removeListener(onMediaChange)
-      }
+    } else {
+      mediaWatcher.addEventListener('change', onMediaChange)
     }
 
-    mediaWatcher.addEventListener('change', onMediaChange)
     return () => {
-      mediaWatcher.removeEventListener('change', onMediaChange)
+      if (mediaWatcher.removeListener) {
+        mediaWatcher.removeListener(onMediaChange)
+      } else {
+        mediaWatcher.removeEventListener('change', onMediaChange)
+      }
     }
-  }, [mediaQuery, setMatches])
+  }, [mediaQuery])
 
   return matches
 }

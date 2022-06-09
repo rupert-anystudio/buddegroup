@@ -1,10 +1,10 @@
-import { useRef, useState } from 'react'
-import { debounce, throttle } from 'lodash'
+import { useRef, useState, useCallback, useEffect } from 'react'
+import { debounce } from 'lodash'
 import { gsap } from 'gsap'
 import Flip from 'gsap/dist/Flip'
 
 import CollapsingSections from './CollapsingSections'
-import { useIsomorphicLayoutEffect } from '../../hooks/useIsomorphicLayoutEffect'
+import useMediaQuery from '../../hooks/useMediaQuery'
 
 gsap.registerPlugin(Flip)
 
@@ -12,47 +12,51 @@ const CollapsingSectionsContainer = ({ sections = [], ...rest }) => {
   const wrapRef = useRef()
   const q = gsap.utils.selector(wrapRef)
 
+  const hasColumns = useMediaQuery('(min-width: 1024px)', false)
+  const canHover = useMediaQuery('(hover: hover)', false)
+
   const [layout, setLayout] = useState({
     openSection: null,
   })
 
-  const onSectionSelectBase = sectionId => {
-    // console.log('handleSectionClick', section)
+  const onSectionSelect_ = sectionId => {
+    const items = q('.item')
     setLayout(prev => ({
       ...prev,
-      state: Flip.getState(q('.item')),
+      state: Flip.getState(items),
       openSection: sectionId,
     }))
   }
 
   const onSectionSelect = useRef(
-    debounce(onSectionSelectBase, 120)
+    debounce(onSectionSelect_, 120)
   ).current
 
-  const handleSectionClick = section => {
-    // console.log('handleSectionClick', section)
-    // onSectionSelect(section.id)
-    setLayout(prev => ({
-      ...prev,
-      state: Flip.getState(q('.item')),
-      openSection: section.id === prev.openSection ? null : section.id,
-    }))
-  }
+  const handleClick = useCallback(section => {
+    if (!canHover || (canHover && !hasColumns)) {
+      onSectionSelect_(section.id)
+    }
+  }, [canHover, hasColumns])
 
-  const handleSectionMouseEnter = section => {
-    // console.log('handleSectionMouseEnter')
-    onSectionSelect(section.id)
-  }
+  const handleMouseEnter = useCallback(section => {
+    if (canHover && hasColumns) {
+      onSectionSelect_(section.id)
+    }
+  }, [canHover, hasColumns])
 
-  const handleMouseLeave = section => {
-    // console.log('handleSectionMouseLeave', section)
-    onSectionSelect(null)
-  }
+  const handleMouseLeave = useCallback(() => {
+    if (canHover && hasColumns) {
+      onSectionSelect_(null)
+    }
+  }, [canHover, hasColumns])
 
-  useIsomorphicLayoutEffect(() => {
+  useEffect(() => {
     if (!layout.state) return
 
+    const items = q('.item')
+
     const timeline = gsap.timeline({
+      paused: true,
       defaults: {
         duration: .3,
         ease: 'power1.inOut',
@@ -63,6 +67,15 @@ const CollapsingSectionsContainer = ({ sections = [], ...rest }) => {
       onComplete: () => {
         // console.log('timeline onComplete!')
       }
+    })
+
+    const layoutTl = Flip.from(layout.state, {
+      duration: .3,
+      absolute: true, 
+      ease: 'power1.inOut',
+      targets: items,
+      scale: false,
+      simple: true,
     })
 
     const beforeLayoutTl = gsap
@@ -103,15 +116,6 @@ const CollapsingSectionsContainer = ({ sections = [], ...rest }) => {
         y: 5,
       })
 
-    const layoutTl = Flip.from(layout.state, {
-      duration: .3,
-      absolute: true, 
-      ease: 'power1.inOut',
-      targets: q('.item'),
-      scale: false,
-      simple: true,
-    })
-
     const aterLayoutTl = gsap.timeline({
       defaults: {
         duration: .3,
@@ -138,8 +142,8 @@ const CollapsingSectionsContainer = ({ sections = [], ...rest }) => {
   return (
     <CollapsingSections
       sections={sections}
-      onSectionClick={handleSectionClick}
-      onSectionMouseEnter={handleSectionMouseEnter}
+      onClick={handleClick}
+      onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       openSection={layout.openSection}
       wrapRef={wrapRef}

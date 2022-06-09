@@ -58,8 +58,9 @@ const Item = styled.div`
 
 const CollapsingSections = ({
   sections = [],
-  onSectionClick,
+  onClick,
   onMouseLeave,
+  onMouseEnter,
   openSection,
   wrapRef,
   renderMedia = () => null,
@@ -68,8 +69,7 @@ const CollapsingSections = ({
 }) => {
   return (
     <Wrap
-    ref={wrapRef}
-    onMouseLeave={onMouseLeave}
+      ref={wrapRef}
     >
       {sections.map(section => {
         const isOpen = section.id === openSection
@@ -79,10 +79,12 @@ const CollapsingSections = ({
             className={`item ${isOpen ? 'open' : 'collapsed'}`}
             isOpen={isOpen}
             isDefault={!openSection}
+            onMouseEnter={() => onMouseEnter(section)}
+            onMouseLeave={() => onMouseLeave()}
+            onClick={() => onClick(section)}
           >
             <div
               className='media'
-              onClick={() => onSectionClick(section)}
             >
               {renderMedia(section)}
             </div>

@@ -1,8 +1,11 @@
 import styled from 'styled-components'
-import CollapsingSections from '../CollapsingSections'
+import ReactPlayer from 'react-player'
+
 import Button from '../Button'
 import bp from '../../styles/bp'
-import fontSizes from '../../styles/fontSizes'
+import CollapsingSections from '../CollapsingSections'
+import useHasWindow from '../../hooks/useHasWindow'
+import { useEffect } from 'react'
 
 const Title = styled.div`
   position: relative;
@@ -74,40 +77,70 @@ const Media = styled.div`
   }
 `
 
+const VideoWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  top: 50%;
+  left: 50%;
+  transform: translate3d(-50%, -50%, 0) scale(1.4);
+  position: absolute;
+  object-fit: cover;
+`
+
+const renderTitle = entry => (
+  <Title>
+    {entry.logo ? (
+      <img src={entry.logo.asset.url} />
+    ) : (
+      <h1>{entry.name}</h1>
+    )}
+  </Title>
+)
+
+const renderContent = entry => (
+  <Content>
+    <p>{entry.description}</p>
+    <Button
+      href={entry.url}
+      label={'Visit'}
+      style={{ marginTop: 10 }}
+    />
+  </Content>
+)
+
+const renderMedia = entry => {
+  const hasWindow = useHasWindow()
+  return (
+    <Media>
+      {entry?.image?.asset?.url && (
+        <img src={entry.image.asset.url} />
+      )}
+      {entry?.video?.asset?.url && hasWindow && (
+        <ReactPlayer
+          muted
+          loop
+          playing={false}
+          // onReady={handleVideoReady}
+          url={entry.video.asset.url}
+          wrapper={VideoWrapper}
+        />
+      )}
+    </Media>
+  )
+}
+
 const BuddeGroups = ({ members }) => {
+
+  // const handleVideoReady = e => {
+  //   console.log('handleVideoReady', e)
+  // }
+
   return (
     <CollapsingSections
       sections={members}
-      renderTitle={entry => {
-        return (
-          <Title>
-            {entry.logo ? (
-              <img src={entry.logo.asset.url} />
-            ) : (
-              <h1>{entry.name}</h1>
-            )}
-          </Title>
-        )
-      }}
-      renderContent={entry => (
-        <Content>
-          <p>{entry.description}</p>
-          <Button href={entry.url} label={'Visit'} style={{ marginTop: 10 }} />
-        </Content>
-      )}
-      renderMedia={entry => (
-        <Media>
-          {entry?.image?.asset?.url && (
-            <img src={entry.image.asset.url} />
-          )}
-          <video
-            muted
-            autoPlay={true}
-            loop
-            src={entry.video.asset.url}
-          />
-        </Media>
-      )}
+      renderTitle={renderTitle}
+      renderContent={renderContent}
+      renderMedia={renderMedia}
     />
   )
 }

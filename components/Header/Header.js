@@ -9,6 +9,9 @@ const Wrap = styled.header`
   padding: 1.5rem;
   margin: 0;
   border-bottom: 1px solid var(--border-color);
+  /* position: sticky;
+  top: 0; */
+  z-index: 100;
 `
 
 const Logo = styled.div`

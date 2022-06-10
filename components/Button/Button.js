@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { forwardRef } from 'react'
 import styled from 'styled-components'
 import fontSizes from '../../styles/fontSizes'
 import fontStyles from '../../styles/fontStyles'
@@ -45,7 +46,7 @@ const Button = ({
   label,
   href,
   ...props
-}) => {
+}, ref) => {
   
   // if no href is given, render as a button
   if (!href) return (
@@ -62,6 +63,7 @@ const Button = ({
   if (typeof href === 'object' || (typeof href === 'string' && href.slice(0,1) === '/')) return (
     <Link href={href} passHref>
       <Wrap
+        ref={ref}
         {...props}
         as='a'
       >
@@ -73,6 +75,7 @@ const Button = ({
   // otherwise consider link as external, adding appropriate attributes
   return (
     <Wrap
+      ref={ref}
       {...props}
       as='a'
       href={href}
@@ -84,4 +87,4 @@ const Button = ({
   )
 }
 
-export default Button
+export default forwardRef(Button)

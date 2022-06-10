@@ -13,6 +13,7 @@ const Wrap = styled.footer`
   justify-content: flex-end;
   align-items: stretch;
   border-top: 1px solid var(--border-color);
+  z-index: 10;
 `
 
 const Footer = ({ copyrightBy, navEntries }) => {

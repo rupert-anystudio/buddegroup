@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { gsap } from 'gsap'
 import Flip from 'gsap/dist/Flip'
@@ -6,6 +6,7 @@ import bp from '../../styles/bp'
 import useMediaQuery from '../../hooks/useMediaQuery'
 import Button from '../Button'
 import useIsomorphicLayoutEffect from '../../hooks/useIsomorphicLayoutEffect'
+import ReactPlayer from 'react-player'
 
 gsap.registerPlugin(Flip)
 
@@ -151,37 +152,35 @@ const VisitButton = styled(Button)`
   margin: 0 0 2rem 0;
 `
 
+const MediaVideoWrapper = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  video {
+    object-fit: cover;
+  }
+`
+
+const MediaVideo = ({ src }) => {
+  return (
+    <ReactPlayer
+      url={src}
+      playing
+      muted
+      loop
+      width="100%"
+      height="100%"
+      wrapper={MediaVideoWrapper}
+    />
+  )
+}
+
 const BuddeGroups = ({
   members,
 }) => {
   const [selectedEntry, setSelectedEntry] = useState(null)
-
-  const domRefs = useRef({
-    wrap: null,
-    entries: null,
-    entry: {},
-    entryContent: {},
-    title: {},
-    link: {},
-  })
-
-  // const q = useMemo(() => gsap.utils.selector(domRefs.current.wrap), [])
-
-  const setDomRef = (id, group) => c => {
-    if (!id) return
-    if (!group) {
-      domRefs.current[id] = c
-      return
-    }
-    const presentGroup = domRefs.current[group]
-    if (!presentGroup) {
-      domRefs.current[group] = {
-        [id]: c
-      }
-      return
-    }
-    domRefs.current[group][id] = c
-  }
 
   const stackLayout = useMediaQuery(stackQuery)
   const columnsLayout = useMediaQuery(columnsQuery)
@@ -189,21 +188,18 @@ const BuddeGroups = ({
   const hoverBehaviour = useMediaQuery(hoverQuery)
 
   const handleMouseEnter = useCallback(id => e => {
-    console.log('handleMouseEnter', id)
     if (hoverBehaviour) {
       setSelectedEntry(id)
     }
   }, [hoverBehaviour])
 
   const handleMouseLeave = useCallback(e => {
-    console.log('handleMouseLeave')
     if (hoverBehaviour) {
       setSelectedEntry(null)
     }
   }, [hoverBehaviour])
 
   const handleEntryClick = useCallback(id => e => {
-    console.log('handleEntryClick', id)
     if (touchBehaviour) {
       setSelectedEntry(prevId => {
         if (prevId === id) return null
@@ -213,15 +209,11 @@ const BuddeGroups = ({
   }, [touchBehaviour])
 
   const [flipState, setFlipState] = useState({
-    entries: members,
     layout: null,
-    selectedEntry: null,
+    entries: members,
   })
 
   useEffect(() => {
-    // const q = gsap.utils.selector(domRefs.current.wrap)
-    // const layoutElems = q('.entry, .entryContent')
-    // console.log('layoutElems', layoutElems)
     setFlipState({
       layout: Flip.getState('.entries, .entry'),
       entries: members.map(entry => ({
@@ -236,10 +228,6 @@ const BuddeGroups = ({
 
   useIsomorphicLayoutEffect(() => {
     if (!flipState.layout) return
-    console.log('flipState changed', flipState)
-    // const q = gsap.utils.selector(domRefs.current.wrap)
-    // const targetElems = q('.entryContent')
-    // console.log('targetElems', targetElems)
     const flipEntryContent = Flip.from(flipState.layout, {
       duration: 0.3,
       ease: 'power2.inOut',
@@ -251,19 +239,16 @@ const BuddeGroups = ({
       scale: false,
       zIndex: 99, // header - 1
     })
-
     flipEntryContent.play()
-
     return () => {
       flipEntryContent.kill()
     }
   }, [flipState])
 
   return (
-    <Wrap ref={setDomRef('wrap')}>
+    <Wrap>
       <Entries
         className={`entries`}
-        ref={setDomRef('entries')}
         onMouseLeave={handleMouseLeave}
       >
         {flipState.entries.map(({
@@ -274,15 +259,12 @@ const BuddeGroups = ({
           image,
           video,
           url,
-          isSelected,
+          isSelected = false,
         }) => {
-          // const isSelected = id === flipState.selectedEntry
           return (
             <Entry
               key={id}
-              ref={setDomRef(id, 'entry')}
               className={`entry ${isSelected ? 'selected' : ''}`}
-              data-entry-id={id}
               onMouseEnter={handleMouseEnter(id)}
               onClick={handleEntryClick(id)}
             >
@@ -291,12 +273,7 @@ const BuddeGroups = ({
                   <img src={image.asset.url} />
                 )}
                 {video?.asset?.url && columnsLayout && (
-                  <video
-                    src={video.asset.url}
-                    autoPlay
-                    muted
-                    loop
-                  />
+                  <MediaVideo src={video.asset.url} />
                 )}
               </Media>
               <Content>

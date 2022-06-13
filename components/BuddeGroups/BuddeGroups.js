@@ -183,6 +183,7 @@ const BuddeGroups = ({
     domRefs.current[group][id] = c
   }
 
+  const stackLayout = useMediaQuery(stackQuery)
   const columnsLayout = useMediaQuery(columnsQuery)
   const touchBehaviour = useMediaQuery(focusQuery)
   const hoverBehaviour = useMediaQuery(hoverQuery)
@@ -286,7 +287,7 @@ const BuddeGroups = ({
               onClick={handleEntryClick(id)}
             >
               <Media>
-                {image?.asset?.url && (
+                {image?.asset?.url && stackLayout && (
                   <img src={image.asset.url} />
                 )}
                 {video?.asset?.url && columnsLayout && (

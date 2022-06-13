@@ -1,9 +1,6 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
-import { debounce, flip, join, throttle } from 'lodash'
-import { gsap } from 'gsap'
-import Flip from 'gsap/dist/Flip'
-import bp, { minWidths } from '../../styles/bp'
+import bp from '../../styles/bp'
 import useMediaQuery from '../../hooks/useMediaQuery'
 import Button from '../Button'
 
@@ -15,8 +12,6 @@ const columnsMediaQuery = `@media ${columnsQuery}`
 const focusMediaQuery = `@media ${focusQuery}`
 const hoverMediaQuery = `@media ${hoverQuery}`
 
-gsap.registerPlugin(Flip)
-
 const Wrap = styled.div`
   position: relative;
   background: black;
@@ -26,9 +21,9 @@ const Wrap = styled.div`
   align-items: stretch;
   flex: 1 0 100%;
   gap: 1px;
-  ${bp.min.tabletwide`
+  ${columnsMediaQuery} {
     flex-direction: row;
-  `}
+  }
 `
 
 const Entry = styled.div`
@@ -41,15 +36,9 @@ const Entry = styled.div`
   @media (hover: hover) {
     cursor: pointer;
   }
-  /* &.selected {
-    @media (max-width: 1023px) {
-      flex-grow: 20;
-      min-height: 50rem;
-    }
-  } */
 `
 
-const EntryChild = styled.div`
+const EntryContent = styled.div`
   position: relative;
   background: slateblue;
   flex: 1 0 100%;
@@ -68,7 +57,7 @@ const Media = styled.div`
   flex: 1 0 auto;
   background: steelblue;
   min-height: 30rem;
-  > img {
+  > img, > video {
     position: absolute;
     top: 0;
     left: 0;
@@ -76,19 +65,32 @@ const Media = styled.div`
     height: 100%;
     object-fit: cover;
   }
+  &:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 12rem;
+    background: linear-gradient(
+      rgba(255,255,255,0) 0%,
+      rgba(255,255,255,0.3) 100%
+    )
+  }
 `
 
 const Content = styled.div`
-  position: relative;
-  margin: 0;
-  padding: 0;
   flex: 0 0 auto;
+  position: relative;
+  background: white;
+  padding: 0;
+  margin: 0;
   ${columnsMediaQuery} {
     position: absolute;
     bottom: 0;
     left: 0;
     width: 100%;
-    
+    will-change: transform;
     transform: translate3d(0, 100%, 0);
     transition: transform 0.3s 0s ease-in-out;
     .selected & {
@@ -96,29 +98,12 @@ const Content = styled.div`
       transition-timing-function: ease-out;
     }
   }
-  /* will-change: transform;
-  transform: translate3d(0, 100%, 0);
-  transition-timing-function: ease-in;
-  transition-property: transform;
-  transition-duration: .2s;
-  transition-delay: 0s;
-  .selected & {
-    transform: translate3d(0,0,0);
-    transition-timing-function: ease-out;
-    @media (max-width: 1023px) {
-      transition-delay: .5s;
-    }
-  } */
-  > div {
-    position: relative;
-    background: white;
-    padding: 2rem;
-  }
 `
 
 const Title = styled.h2`
   position: relative;
-  margin: 1rem 0 2rem 0;
+  padding: 2rem 2rem 1rem 2rem;
+  margin: 0 0 0 0;
   span {
     position: absolute;
     visibility: hidden;
@@ -134,34 +119,26 @@ const Title = styled.h2`
   }
   
   ${columnsMediaQuery} {
-    transform: translate3d(0, calc(-100% - 5rem), 0);
+    transform: translate3d(0, calc(-100% - 0rem), 0);
     transition: transform 0.3s 0s ease-in-out;
     .selected & {
       transform: translate3d(0, 0%, 0);
       transition-timing-function: ease-out;
     }
   }
-  /* transform: translate3d(0, calc(-100% - 5rem), 0);
-  transition-timing-function: ease-in;
-  transition-property: transform;
-  transition-duration: .2s;
-  transition-delay: 0s;
-  .selected & {
-    @media (max-width: 1023px) {
-      transition-delay: .5s;
-    }
-    transform: translate3d(0, 0%, 0);
-    transition-timing-function: ease-out;
-  } */
 `
 
-const Text = styled.p`
+const Description = styled.div`
   position: relative;
-  margin: 0 0 2rem 0;
+  padding: 0 2rem;
+  margin: 0;
+  p {
+    margin: 0 0 1rem 0;
+  }
 `
 
 const VisitButton = styled(Button)`
-  margin: 0 0 1rem 0;
+  margin: 0 0 2rem 0;
 `
 
 const BuddeGroups = ({
@@ -179,7 +156,7 @@ const BuddeGroups = ({
   const domRefs = useRef({
     wrap: null,
     entries: {},
-    entryChild: {},
+    entryContent: {},
     titles: {},
     links: {},
   })
@@ -230,89 +207,12 @@ const BuddeGroups = ({
     setSelectedEntry(null)
   }
 
-  // const [flipState, setFlipState] = useState({ height: 0 })
-
-  // useEffect(() => {
-  //   const q = gsap.utils.selector(domRefs.current.wrap)
-  //   const rect = domRefs.current.wrap.getBoundingClientRect()
-  //   setFlipState(prevState => ({
-  //     layout: Flip.getState(q('.entryChild')),
-  //     selectedEntry,
-  //     height: rect?.height || prevState.height,
-  //   }))
-  // }, [selectedEntry])
-
-  // const scrollToEntry = useCallback(id => {
-  //   const target = domRefs.current.entries[id]
-  //   if (target) {
-  //     target.scrollIntoView({
-  //       // behaviour: 'smooth'
-  //     })
-  //   }
-  // }, [])
-
-  // useEffect(() => {
-  //   const q = gsap.utils.selector(domRefs.current.wrap)
-
-  //   // gsap.set(
-  //   //   domRefs.current.wrap,
-  //   //   {
-  //   //     minHeight: flipState.height,
-  //   //   }
-  //   // )
-
-  //   const flip = gsap.timeline({
-  //     paused: true,
-  //     defaults: {
-  //       duration: .2,
-  //       ease: 'power1.inOut',
-  //     }
-  //   })
-
-  //   if (flipState.layout) {
-  //     const entryEls = q('.entryChild')
-  //     flip.add(
-  //       Flip.from(flipState.layout, {
-  //         delay: flipState.selectedEntry ? 0.2 : 0,
-  //         // delay: 0,
-  //         duration: .4,
-  //         absolute: true,
-  //         ease: 'power2.inOut',
-  //         targets: entryEls,
-  //         scale: false,
-  //         simple: true,
-  //         // onStart: () => scrollToEntry(flipState.selectedEntry),
-  //         // onComplete: () => scrollToEntry(flipState.selectedEntry),
-  //       }), '<'
-  //     )
-  //   }
-
-  //   // flip.add(
-  //   //   gsap.set(
-  //   //     domRefs.current.wrap,
-  //   //     {
-  //   //       minHeight: 0
-  //   //     }
-  //   //   )
-  //   // )
-
-  //   flip.play()
-
-  //   return () => {
-  //     flip.kill()
-  //   }
-  // }, [
-  //   flipState,
-  //   scrollToEntry,
-  // ])
-
   return (
     <Wrap
       ref={setDomRef('wrap')}
       onFocus={handleFocus}
       onMouseOver={handleMouseOver}
       onMouseLeave={handleMouseLeave}
-      className={`entries`}
     >
       {entries.map(({
         id,
@@ -329,44 +229,44 @@ const BuddeGroups = ({
             key={id}
             ref={setDomRef(id, 'entries')}
             tabIndex={focusBehaviour ? 0 : -1}
-            className={`entry ${isSelected ? 'selected' : 'idle'}`}
+            className={`entry ${isSelected ? 'selected' : ''}`}
             data-entry-id={id}
           >
-            <EntryChild
-              ref={setDomRef(id, 'entryChild')}
-              className={`entryChild`}
+            <EntryContent
+              className={`entryContent`}
             >
               <Media>
                 {image?.asset?.url && (
                   <img src={image.asset.url} />
                 )}
+                {video?.asset?.url && columnsLayout && (
+                  <video
+                    src={video.asset.url}
+                    autoPlay
+                    muted
+                    loop
+                  />
+                )}
               </Media>
-              <Content
-                className={`entry__content`}
-              >
-                <div>
-                  <Title
-                    ref={setDomRef(id, 'titles')}
-                    className={`entry__title`}
-                  >
-                    <span>{name}</span>
-                    {logo?.asset?.url && (
-                      <img src={logo.asset.url} alt={name} />
-                    )}
-                  </Title>
-                  <Text>
+              <Content>
+                <Title>
+                  <span>{name}</span>
+                  {logo?.asset?.url && (
+                    <img src={logo.asset.url} alt={name} />
+                  )}
+                </Title>
+                <Description>
+                  <p>
                     {description}
-                  </Text>
+                  </p>
                   <VisitButton
-                    ref={setDomRef(id, 'links')}
-                    className={`entry__link`}
                     label={'Visit'}
                     href={url}
                     tabIndex={columnsLayout && !isSelected ? -1 : 0}
                   />
-                </div>
+                </Description>
               </Content>
-            </EntryChild>
+            </EntryContent>
           </Entry>
         )
       })}

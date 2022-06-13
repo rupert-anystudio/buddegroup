@@ -1,12 +1,12 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { gsap } from 'gsap'
 import Flip from 'gsap/dist/Flip'
+import ReactPlayer from 'react-player'
 import bp from '../../styles/bp'
 import useMediaQuery from '../../hooks/useMediaQuery'
 import Button from '../Button'
 import useIsomorphicLayoutEffect from '../../hooks/useIsomorphicLayoutEffect'
-import ReactPlayer from 'react-player'
 
 gsap.registerPlugin(Flip)
 
@@ -164,16 +164,44 @@ const MediaVideoWrapper = styled.div`
 `
 
 const MediaVideo = ({ src }) => {
+  const playerRef = useRef(null)
+
+  const [isReady, setIsReady] = useState(false)
+
+  const handleReady = useCallback(() => {
+    console.log('video ready')
+    setIsReady(true)
+  })
+
+  useIsomorphicLayoutEffect(() => {
+    gsap.set(playerRef.current, {
+      autoAlpha: 0,
+      scale: 1.2,
+    })
+  }, [])
+
+  useIsomorphicLayoutEffect(() => {
+    if (!isReady) return
+    gsap.to(playerRef.current, {
+      autoAlpha: 1,
+      scale: 1,
+      duration: .3
+    })
+  }, [isReady])
+
   return (
-    <ReactPlayer
-      url={src}
-      playing
-      muted
-      loop
-      width="100%"
-      height="100%"
-      wrapper={MediaVideoWrapper}
-    />
+    <MediaVideoWrapper ref={playerRef}>
+      <ReactPlayer
+        url={src}
+        playing={isReady}
+        muted
+        loop
+        width="100%"
+        height="100%"
+        wrapper={MediaVideoWrapper}
+        onReady={handleReady}
+      />
+    </MediaVideoWrapper>
   )
 }
 

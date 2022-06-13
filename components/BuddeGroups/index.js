@@ -1,1 +1,1 @@
-export { default } from './BuddeGroupsTest'
+export { default } from './BuddeGroups'

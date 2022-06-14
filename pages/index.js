@@ -18,7 +18,7 @@ export async function getStaticProps ({
       url,
       description,
       video{ asset->{ url } },
-      image{ asset->{ url } },
+      image,
       logo{ asset->{ url } },
     }
   }`)

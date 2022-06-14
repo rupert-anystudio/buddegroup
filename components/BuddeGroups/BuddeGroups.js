@@ -7,6 +7,7 @@ import bp from '../../styles/bp'
 import useMediaQuery from '../../hooks/useMediaQuery'
 import Button from '../Button'
 import useIsomorphicLayoutEffect from '../../hooks/useIsomorphicLayoutEffect'
+import NextSanityImage from '../NextSanityImage'
 
 gsap.registerPlugin(Flip)
 
@@ -161,6 +162,18 @@ const MediaVideoWrapper = styled.div`
   }
 `
 
+const MediaImgae = ({ image }) => {
+  return (
+    <NextSanityImage
+      image={image}
+      layout='fill'
+      sizes='100vw'
+      // imageBuilder={imageBuilder}
+      // blurUpImageBuilder={blurUpImageBuilder}
+    />
+  )
+}
+
 const MediaVideo = ({ src }) => {
   const playerRef = useRef(null)
 
@@ -294,8 +307,8 @@ const BuddeGroups = ({
               onClick={handleEntryClick(id)}
             >
               <Media>
-                {image?.asset?.url && stackLayout && (
-                  <img src={image.asset.url} />
+                {image && stackLayout && (
+                  <MediaImgae image={image} />
                 )}
                 {video?.asset?.url && columnsLayout && (
                   <MediaVideo src={video.asset.url} />

@@ -66,6 +66,7 @@ const Media = styled.div`
   background: black;
   flex: 1 0 auto;
   overflow: hidden;
+  user-select: none;
   > img, > video {
     position: absolute;
     top: 0;
@@ -114,6 +115,7 @@ const Title = styled.h2`
   position: relative;
   padding: 2rem 2rem 1rem 2rem;
   margin: 0 0 0 0;
+  user-select: none;
   span {
     position: absolute;
     visibility: hidden;
@@ -149,6 +151,7 @@ const Description = styled.div`
 
 const VisitButton = styled(Button)`
   margin: 0 0 2rem 0;
+  user-select: none;
 `
 
 const MediaVideoWrapper = styled.div`
@@ -162,7 +165,7 @@ const MediaVideoWrapper = styled.div`
   }
 `
 
-const MediaImgae = ({ image }) => {
+const MediaImage = ({ image }) => {
   return (
     <NextSanityImage
       image={image}
@@ -308,7 +311,7 @@ const BuddeGroups = ({
             >
               <Media>
                 {image && stackLayout && (
-                  <MediaImgae image={image} />
+                  <MediaImage image={image} />
                 )}
                 {video?.asset?.url && columnsLayout && (
                   <MediaVideo src={video.asset.url} />

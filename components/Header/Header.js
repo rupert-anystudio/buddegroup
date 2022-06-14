@@ -17,6 +17,7 @@ const Wrap = styled.header`
 const Logo = styled.div`
   position: relative;
   line-height: 0;
+  user-select: none;
   span {
     visibility: hidden;
     position: absolute;

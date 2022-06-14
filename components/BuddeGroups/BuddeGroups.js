@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { gsap } from 'gsap'
 import Flip from 'gsap/dist/Flip'
@@ -126,7 +126,6 @@ const Title = styled.h2`
       height: 4.8rem;
     `}
   }
-  
   transform: translate3d(0, calc(-100% - 0rem), 0);
   transition: transform 0.3s 0s ease-in-out;
   .selected & {
@@ -136,7 +135,6 @@ const Title = styled.h2`
       transition-delay: 0.3s;
     }
   }
-  
 `
 
 const Description = styled.div`
@@ -169,9 +167,8 @@ const MediaVideo = ({ src }) => {
   const [isReady, setIsReady] = useState(false)
 
   const handleReady = useCallback(() => {
-    console.log('video ready')
     setIsReady(true)
-  })
+  }, [])
 
   useIsomorphicLayoutEffect(() => {
     gsap.set(playerRef.current, {
@@ -199,7 +196,7 @@ const MediaVideo = ({ src }) => {
         width="100%"
         height="100%"
         wrapper={MediaVideoWrapper}
-        onReady={handleReady}
+        onReady={() => handleReady()}
       />
     </MediaVideoWrapper>
   )

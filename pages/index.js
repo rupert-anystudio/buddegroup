@@ -11,15 +11,20 @@ export async function getStaticProps ({
   preview = false,
 }) {
   const client = await getClient(preview)
-  const data = await client.fetch(`*[_type == "buddegroup"][0]{
-    members[]{
-      "id": _key,
-      name,
-      url,
-      description,
-      video{ asset->{ url } },
-      image,
-      logo{ asset->{ url } },
+  const data = await client.fetch(`{
+    ...*[_type == "buddegroup"][0]{
+      members[]{
+        "id": _key,
+        name,
+        url,
+        description,
+        video{ asset->{ url } },
+        image,
+        logo{ asset->{ url } },
+      }
+    },
+    ...*[_type == "siteSettings"][0]{
+      accentColor,
     }
   }`)
   return {

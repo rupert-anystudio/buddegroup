@@ -9,7 +9,7 @@ const GlobalStyles = createGlobalStyle`
     --bg-color: #ffffff;
     --text-color: #000000;
     --border-color: #BBBBBB;
-    --button-color: #FFE7AA;
+    --button-color: ${props => props.buttonColor || '#FFE7AA'};
   }
   *, *:before, *:after {
     box-sizing: border-box;

@@ -11,7 +11,7 @@ function MyApp({ Component, pageProps }) {
   const desc = ''
   return (
     <>
-      <GlobalStyles />
+      <GlobalStyles buttonColor={pageProps?.accentColor?.hex} />
       <Head>
         {/* Uncomment when using a custom font to preload in order to prevent FOUC */}
         <link

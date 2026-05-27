@@ -1,0 +1,1 @@
+export { NextSanityImage as default } from './NextSanityImage'

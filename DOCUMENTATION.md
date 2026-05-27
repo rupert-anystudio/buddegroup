@@ -47,7 +47,6 @@ All content is managed through Sanity CMS. Pages are statically generated with I
 | Animation | GSAP (with Flip plugin) | 3.10.4 |
 | Video | react-player | 2.10 |
 | Rich text | @portabletext/react | 1.0.6 |
-| Utilities | lodash | 4.17.21 |
 | CSS reset | normalize.css | 8.0.1 |
 
 ---
@@ -121,16 +120,12 @@ buddegroup/
 │   ├── sanity.config.js     # Shared Sanity client config
 │   ├── sanity.server.js     # getClient() — switches preview vs. production
 │   ├── sanity.client.js     # urlFor(), usePreviewSubscription, PortableText
-│   ├── queries.js           # Placeholder for GROQ queries (currently empty)
 │   └── utils.js             # String and breakpoint helper functions
 ├── hooks/
 │   ├── useMediaQuery.js     # Returns boolean for a CSS media query string
-│   ├── useIsomorphicLayoutEffect.js  # useLayoutEffect that's SSR-safe
-│   ├── useHasWindow.js      # Boolean — true once component is client-mounted
-│   └── useResizeObserver.js # Polyfilled resize observer hook
+│   └── useIsomorphicLayoutEffect.js  # useLayoutEffect that's SSR-safe
 ├── styles/
 │   ├── bp.js                # Breakpoint definitions + tagged-template helpers
-│   ├── colors.js            # Color palette object
 │   ├── fontSizes.js         # Typographic scale (rem-based)
 │   ├── fontStyles.js        # Font-family CSS strings
 │   └── fontfaces.css        # @font-face declarations (ABC Repro)
@@ -483,19 +478,6 @@ const MyDiv = styled.div`
 
 Breakpoints use **em units** (divided by 16) for accessibility — they scale with the user's browser font size setting.
 
-### Colors (`styles/colors.js`)
-
-```js
-{
-  black:       '#000000',
-  white:       '#ffffff',
-  grey:        '#EAEAEA',
-  greyDark:    '#BBBBBB',
-  greyDarker:  '#888888',
-  creme:       '#FFE7AA',
-}
-```
-
 ### Custom font
 
 The typeface is **ABC Repro** (licensed font, not open-source). Files are in `public/fonts/`. Two weights are loaded:
@@ -518,14 +500,6 @@ const isDesktop = useMediaQuery('(min-width: 1024px)')
 ### `useIsomorphicLayoutEffect`
 
 Drop-in replacement for `useLayoutEffect` that falls back to `useEffect` during SSR, preventing the Next.js hydration warning.
-
-### `useHasWindow(): boolean`
-
-Returns `false` on the server, `true` after the component mounts on the client. Use this when code must only run in a browser context.
-
-### `useResizeObserver`
-
-Re-exports the `use-resize-observer` package with a polyfill for `ResizeObserver` in environments that don't support it natively.
 
 ---
 
@@ -626,8 +600,7 @@ ISR (`revalidate`) works out of the box on Vercel. The home page regenerates eve
 
 | Area | Notes |
 |---|---|
-| `lib/queries.js` | File is empty — GROQ queries are currently written inline in each page's `getStaticProps`. Moving them here would improve maintainability. |
+| GROQ queries | All GROQ queries are written inline in each page's `getStaticProps`. Extracting them to a shared `lib/queries.js` would improve maintainability. |
 | Preview mode API route | `lib/sanity.client.js` exports `usePreviewSubscription` but no `/api/preview` route exists yet. Live preview is not wired up. |
-| `lib/queries.js` | Placeholder — all GROQ queries are inline in pages. |
 | Imprint document ID | The imprint static page is queried by a hardcoded Sanity document `_id`. This will break if the document is recreated. Consider using a `slug` field instead. |
 | Sanity Studio | The Sanity Studio (schema definitions, desk configuration) is **not** part of this repository. It lives in a separate Sanity project. |
